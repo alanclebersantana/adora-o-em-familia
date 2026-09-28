@@ -1,50 +1,8 @@
-/* Alan & Átina — service worker. Troque a versão a cada publicação. */
-const VERSION = 'aa-v1';
-const SHELL = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './icon-maskable-512.png'];
-
-self.addEventListener('install', event => {
-  event.waitUntil((async () => {
-    const cache = await caches.open(VERSION);
-    // cada arquivo separado: se um falhar, a instalação continua
-    await Promise.all(SHELL.map(url => cache.add(new Request(url, {cache: 'reload'})).catch(() => {})));
-    await self.skipWaiting();
-  })());
-});
-
-self.addEventListener('activate', event => {
-  event.waitUntil((async () => {
-    for (const key of await caches.keys()) if (key !== VERSION) await caches.delete(key);
-    await self.clients.claim();
-  })());
-});
-
-self.addEventListener('fetch', event => {
-  const req = event.request;
-  if (req.method !== 'GET') return;
-  const url = new URL(req.url);
-
-  // navegação: rede primeiro, cache se estiver sem internet
-  if (req.mode === 'navigate') {
-    event.respondWith((async () => {
-      try {
-        const res = await fetch(req);
-        (await caches.open(VERSION)).put('./index.html', res.clone());
-        return res;
-      } catch {
-        return (await caches.match('./index.html')) || (await caches.match('./')) || Response.error();
-      }
-    })());
-    return;
-  }
-
-  // fontes do Google e arquivos do app: cache primeiro, atualiza em segundo plano
-  const isFont = url.hostname === 'fonts.googleapis.com' || url.hostname === 'fonts.gstatic.com';
-  if (isFont || url.origin === location.origin) {
-    event.respondWith((async () => {
-      const cache = await caches.open(VERSION);
-      const hit = await cache.match(req);
-      const net = fetch(req).then(res => { if (res && (res.ok || res.type === 'opaque')) cache.put(req, res.clone()); return res; }).catch(() => null);
-      return hit || (await net) || Response.error();
-    })());
-  }
-});
+const C="coragem-v7";
+const CORE=["./","index.html","manifest.json","icon-192.png","icon-512.png"];
+const IMGS=["1102025901_univ_cnt_1.webp", "1102025901_univ_cnt_2.webp", "1102025901_univ_cnt_3.webp", "1102025902_univ_cnt_1.webp", "1102025902_univ_cnt_2.webp", "1102025902_univ_cnt_3.webp", "1102025902_univ_cnt_4.webp", "1102025902_univ_cnt_5.webp", "1102025902_univ_cnt_6.webp", "1102025903_univ_cnt_1.webp", "1102025903_univ_cnt_2.webp", "1102025903_univ_cnt_3.webp", "1102025903_univ_cnt_4.webp", "1102025904_univ_cnt_1.webp", "1102025904_univ_cnt_2.webp", "1102025904_univ_cnt_3.webp", "1102025904_univ_cnt_4.webp", "1102025905_univ_cnt_1.webp", "1102025905_univ_cnt_2.webp", "1102025905_univ_cnt_4.webp", "1102025905_univ_cnt_6.webp", "1102025906_univ_cfb_001.webp", "1102025906_univ_cnt_1.webp", "1102025906_univ_cnt_2.webp", "1102025907_T_cfb_001.webp", "1102025907_univ_cnt_1.webp", "1102025907_univ_cnt_2.webp", "1102025907_univ_cnt_3.webp", "1102025908_univ_cnt_1.webp", "1102025908_univ_cnt_2.webp", "1102025908_univ_cnt_3.webp", "1102025908_univ_cnt_4.webp", "1102025908_univ_cnt_5.webp", "1102025908_univ_cnt_6.webp", "1102025909_univ_cfb_001.webp", "1102025909_univ_cnt_1.webp", "1102025909_univ_cnt_2.webp", "1102025909_univ_cnt_3.webp", "1102025910_univ_cnt_1.webp", "1102025910_univ_cnt_3.webp", "1102025910_univ_cnt_4.webp", "1102025910_univ_cnt_5.webp", "1102025911_univ_cfb_001.webp", "1102025911_univ_cnt_1.webp", "1102025911_univ_cnt_2.webp", "1102025911_univ_cnt_3.webp", "1102025912_T_cnt_3.webp", "1102025912_T_cnt_4.webp", "1102025912_univ_cnt_1.webp", "1102025912_univ_cnt_2.webp", "1102025913_univ_cnt_1.webp", "1102025913_univ_cnt_2.webp", "1102025913_univ_cnt_3.webp", "1102025913_univ_cnt_4.webp", "1102025914_univ_cnt_1.webp", "1102025914_univ_cnt_2.webp", "1102025914_univ_cnt_3.webp", "1102025914_univ_cnt_5.webp", "1102025915_univ_cfb_001.webp", "1102025915_univ_cnt_1.webp", "1102025915_univ_cnt_3.webp", "1102025915_univ_cnt_5.webp", "1102025916_univ_cnt_1.webp", "1102025916_univ_cnt_3.webp", "1102025916_univ_cnt_5.webp", "1102025917_univ_cnt_1.webp", "1102025917_univ_cnt_3.webp", "1102025917_univ_cnt_5.webp", "1102025918_T_cnt_3.webp", "1102025918_univ_cfb_001.webp", "1102025918_univ_cnt_1.webp", "1102025918_univ_cnt_2.webp", "1102025919_univ_cnt_1.webp", "1102025919_univ_cnt_2.webp", "1102025919_univ_cnt_3.webp", "1102025920_T_cnt_2.webp", "1102025920_univ_cnt_1.webp", "1102025920_univ_cnt_3.webp", "1102025921_univ_cnt_1.webp", "1102025921_univ_cnt_2.webp", "1102025921_univ_cnt_3.webp", "1102025921_univ_cnt_4.webp", "1102025922_univ_cnt_1.webp", "1102025922_univ_cnt_2.webp", "1102025922_univ_cnt_4.webp", "1102025922_univ_cnt_6.webp", "1102025923_univ_cnt_1.webp", "1102025923_univ_cnt_2.webp", "1102025923_univ_cnt_3.webp", "1102025923_univ_cnt_4.webp", "1102025924_univ_cnt_1.webp", "1102025924_univ_cnt_3.webp", "1102025924_univ_cnt_5.webp", "1102025924_univ_cnt_6.webp", "1102025925_univ_cnt_1.webp", "1102025925_univ_cnt_2.webp", "1102025925_univ_cnt_3.webp", "1102025925_univ_cnt_4.webp", "1102025925_univ_cnt_5.webp", "1102025925_univ_cnt_6.webp", "1102025926_univ_cnt_1.webp", "1102025926_univ_cnt_2.webp", "1102025926_univ_cnt_3.webp", "1102025927_univ_cfb_001.webp", "1102025927_univ_cnt_1.webp", "1102025927_univ_cnt_2.webp", "1102025927_univ_cnt_3.webp", "1102025928_univ_cfb_001.webp", "1102025928_univ_cnt_1.webp", "1102025928_univ_cnt_3.webp", "1102025929_univ_cfb_001.webp", "1102025929_univ_cnt_1.webp", "1102025929_univ_cnt_2.webp", "1102025929_univ_cnt_3.webp", "1102025930_univ_cfb_001.webp", "1102025930_univ_cnt_1.webp", "1102025930_univ_cnt_2.webp", "1102025930_univ_cnt_3.webp", "1102025931_univ_cnt_1.webp", "1102025931_univ_cnt_2.webp", "1102025931_univ_cnt_3.webp", "1102025931_univ_cnt_4.webp", "1102025932_univ_cnt_1.webp", "1102025932_univ_cnt_3.webp", "1102025932_univ_cnt_5.webp", "1102025933_univ_cnt_1.webp", "1102025933_univ_cnt_2.webp", "1102025933_univ_cnt_3.webp", "1102025934_univ_cnt_1.webp", "1102025934_univ_cnt_2.webp", "1102025934_univ_cnt_3.webp", "1102025934_univ_cnt_4.webp", "1102025935_univ_cnt_1.webp", "1102025935_univ_cnt_2.webp", "1102025935_univ_cnt_3.webp", "1102025935_univ_cnt_4.webp", "1102025936_univ_cnt_1.webp", "1102025936_univ_cnt_3.webp", "1102025936_univ_cnt_5.webp", "1102025937_univ_cnt_1.webp", "1102025937_univ_cnt_2.webp", "1102025937_univ_cnt_3.webp", "1102025937_univ_cnt_4.webp", "1102025938_univ_cfb_001.webp", "1102025938_univ_cnt_1.webp", "1102025938_univ_cnt_3.webp", "1102025938_univ_cnt_4.webp", "1102025939_univ_cnt_1.webp", "1102025939_univ_cnt_2.webp", "1102025939_univ_cnt_3.webp", "1102025939_univ_cnt_4.webp", "1102025940_T_cnt_2.webp", "1102025940_univ_cnt_1.webp", "1102025940_univ_cnt_3.webp", "1102025940_univ_cnt_4.webp", "1102025941_univ_cnt_1.webp", "1102025941_univ_cnt_3.webp", "1102025941_univ_cnt_5.webp", "1102025942_univ_cnt_1.webp", "1102025942_univ_cnt_2.webp", "1102025942_univ_cnt_3.webp", "1102025942_univ_cnt_4.webp", "1102025943_univ_cnt_1.webp", "1102025943_univ_cnt_2.webp", "1102025943_univ_cnt_3.webp", "1102025944_univ_cnt_1.webp", "1102025944_univ_cnt_2.webp", "1102025944_univ_cnt_3.webp", "1102025944_univ_cnt_4.webp", "1102025945_univ_cfb_001.webp", "1102025945_univ_cnt_1.webp", "1102025945_univ_cnt_2.webp", "1102025945_univ_cnt_3.webp", "1102025946_univ_cnt_1.webp", "1102025946_univ_cnt_2.webp", "1102025946_univ_cnt_3.webp", "1102025947_univ_cfb_001.webp", "1102025947_univ_cnt_1.webp", "1102025947_univ_cnt_2.webp", "1102025947_univ_cnt_3.webp", "1102025948_univ_cnt_1.webp", "1102025948_univ_cnt_2.webp", "1102025948_univ_cnt_3.webp", "1102025949_T_cnt_2.webp", "1102025949_univ_cfb_001.webp", "1102025949_univ_cnt_1.webp", "1102025949_univ_cnt_3.webp", "1102025950_univ_cfb_001.webp", "1102025950_univ_cnt_1.webp", "1102025950_univ_cnt_2.webp", "1102025950_univ_cnt_3.webp", "1102025951_univ_cnt_1.webp", "1102025951_univ_cnt_2.webp", "1102025951_univ_cnt_3.webp", "1102025952_T_cnt_2.webp", "1102025952_univ_cfb_001.webp", "1102025952_univ_cnt_1.webp", "1102025953_univ_cfb_001.webp", "1102025953_univ_cnt_1.webp", "1102025953_univ_cnt_3.webp", "1102025954_univ_cnt_1.webp", "1102025954_univ_cnt_2.webp", "1102025954_univ_cnt_3.webp", "capa-livro.webp"];
+self.addEventListener("install",e=>{self.skipWaiting();e.waitUntil(caches.open(C).then(c=>c.addAll(CORE).then(()=>c.addAll(IMGS.map(i=>"img/"+i)).catch(()=>{}))))});
+self.addEventListener("activate",e=>e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==C).map(x=>caches.delete(x)))).then(()=>self.clients.claim())));
+self.addEventListener("fetch",e=>{const u=new URL(e.request.url);if(e.request.method!=="GET"||u.origin!==location.origin)return;
+ if(e.request.mode==="navigate"||u.pathname.endsWith(".html")){e.respondWith(fetch(e.request).then(r=>{caches.open(C).then(c=>c.put(e.request,r.clone()));return r}).catch(()=>caches.match(e.request).then(r=>r||caches.match("index.html"))));return}
+ e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).then(n=>{const cl=n.clone();caches.open(C).then(c=>c.put(e.request,cl));return n})))});

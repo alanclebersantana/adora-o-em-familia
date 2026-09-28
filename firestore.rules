@@ -1,0 +1,25 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // E-mails do Google que podem ler e editar o estudo (sempre em minúsculas)
+    function familia() {
+      return request.auth != null
+        && request.auth.token.email_verified == true
+        && request.auth.token.email.lower() in [
+             'alanclebersantana@gmail.com',
+             'EMAIL_DA_ATINA@gmail.com'
+           ];
+    }
+
+    // App "Ande Corajosamente com Deus" — uma lição por documento (L1 … L54)
+    match /estudoCoragem/familia/licoes/{licao} {
+      allow read: if familia();
+      allow write: if familia()
+        && licao.matches('^L[0-9]{1,2}$')
+        && request.resource.size() < 900 * 1024;
+    }
+
+    // Todo o resto fica bloqueado
+  }
+}
