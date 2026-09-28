@@ -228,14 +228,8 @@ textarea:focus,input:focus,.rte:focus{outline:2px solid color-mix(in srgb,var(--
 /* ===== CONFIGURAÇÃO DO FIREBASE =====
    Cole aqui o firebaseConfig do seu projeto. Vazio = funciona só no aparelho. */
 const FIREBASE_CONFIG = {
-  apiKey: "AIzaSyAXtmMoa0RaqL4nobei-zwi17JCRq8Zvj4",
-  authDomain: "adoracao-em-familia.firebaseapp.com",
-  projectId: "adoracao-em-familia",
-  storageBucket: "adoracao-em-familia.firebasestorage.app",
-  messagingSenderId: "325780268416",
-  appId: "1:325780268416:web:0666420d722da06c508d65"
-};
   // apiKey: "", authDomain: "", projectId: "", storageBucket: "", messagingSenderId: "", appId: ""
+};
 const FAMILIA = "familia"; // cada lição fica em estudoCoragem/familia/licoes/L{n}
 // Quem pode acessar é definido nas REGRAS do Firestore (lista de e-mails do Google).
 
@@ -262,7 +256,7 @@ let col=null;
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 function status(t,c){$("#st").textContent=t;$("#dot").className="dot "+(c||"")}
-function toast(t){const e=$("#toast");e.textContent=t;e.classList.add("on");clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove("on"),2200)}
+function toast(t){const e=$("#toast");e.textContent=t;e.classList.add("on");clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove("on"),Math.max(2200,t.length*70))}
 
 /* ===== Firebase ===== */
 let unsub=null,user=null;
@@ -305,17 +299,29 @@ function uploadLocalOnly(snap){
     col.doc("L"+n).set(doc,{merge:true}).catch(console.error);
   }
 }
-function isStandalone(){return matchMedia("(display-mode: standalone)").matches||navigator.standalone}
 function login(){
   if(!window.firebase||!firebase.apps.length)return toast("Configure o Firebase primeiro");
   const p=new firebase.auth.GoogleAuthProvider();p.setCustomParameters({prompt:"select_account"});
   const a=firebase.auth();
-  (isStandalone()?a.signInWithRedirect(p):a.signInWithPopup(p).catch(e=>{
-    if(e.code==="auth/popup-blocked"||e.code==="auth/operation-not-supported-in-this-environment")return a.signInWithRedirect(p);throw e})).catch(authErr);
+  status("Entrando…","busy");
+  // Sempre por janela (popup): o login por redirecionamento se perde no GitHub Pages,
+  // porque o navegador bloqueia o armazenamento do domínio firebaseapp.com.
+  a.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+   .then(()=>a.signInWithPopup(p))
+   .then(r=>{if(r&&r.user)toast("Conectado: "+r.user.email)})
+   .catch(e=>{
+     if(e.code==="auth/popup-blocked")return toast("O navegador bloqueou a janela de login. Permita pop-ups para este site e tente de novo.");
+     authErr(e)})
+   .finally(()=>{if(!user)status("Entre com Google para sincronizar")});
 }
 function authErr(e){if(!e)return;console.error(e);
-  if(e.code==="auth/unauthorized-domain")toast("Domínio não autorizado no Firebase Auth");
-  else if(e.code!=="auth/popup-closed-by-user"&&e.code!=="auth/cancelled-popup-request")toast("Não foi possível entrar");}
+  const m={"auth/unauthorized-domain":"Domínio não autorizado: adicione "+location.hostname+" em Authentication → Settings → Authorized domains",
+    "auth/operation-not-allowed":"Ative o provedor Google em Authentication → Sign-in method",
+    "auth/network-request-failed":"Sem internet para entrar",
+    "auth/internal-error":"Erro interno do login — confira o firebaseConfig"};
+  if(e.code==="auth/popup-closed-by-user"||e.code==="auth/cancelled-popup-request")return;
+  toast(m[e.code]||("Não foi possível entrar ("+(e.code||e.message)+")"));
+}
 function updateUserUI(){
   const on=!!user,cfg=!!FIREBASE_CONFIG.projectId;
   $("#who").textContent=on?("Conectado: "+user.email):(cfg?"Não conectado":"Firebase não configurado");
