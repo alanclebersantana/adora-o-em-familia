@@ -442,12 +442,13 @@ function home(keep){
   const feitasL=L.filter(l=>lx(l.n).done)
     .sort((a,b)=>(lx(b.n).done||"").localeCompare(lx(a.n).done||"")||b.n-a.n);
   if(feitasL.length)h+=`<div class="sech">Já estudadas<small>${feitasL.length} ${feitasL.length===1?"lição":"lições"}, da mais recente para a mais antiga</small></div>
-    <div class="grid">${feitasL.map(l=>lcard(l,false)).join("")}</div>`;
+    <div class="grid">${feitasL.map(l=>lcard(l)).join("")}</div>`;
 
+  // as seções do livro mostram apenas o que ainda falta estudar
   SECOES.forEach(sc=>{
-    h+=`<div class="sech">${sc.t}<small>${sc.s}</small></div><div class="grid">`;
-    L.filter(l=>l.n>=sc.de&&l.n<=sc.ate).forEach(l=>{h+=lcard(l)});
-    h+="</div>";
+    const falta=L.filter(l=>l.n>=sc.de&&l.n<=sc.ate&&!lx(l.n).done);
+    if(!falta.length)return;
+    h+=`<div class="sech">${sc.t}<small>${sc.s}</small></div><div class="grid">${falta.map(l=>lcard(l)).join("")}</div>`;
   });
   $("#app").innerHTML=h;
   const norm=s=>s.normalize("NFD").replace(/\p{Diacritic}/gu,"");
