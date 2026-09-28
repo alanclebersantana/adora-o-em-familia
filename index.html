@@ -430,15 +430,24 @@ function home(keep){
    <div class="prog"><i style="width:${100*feitas/tot}%"></i></div>
    ${nx?`<button class="btn pri" style="margin-top:14px" data-go="${nx.n}">Continuar: lição ${nx.n}</button>`:""}</div></section>
    <input class="search" id="q" placeholder="Buscar personagem ou título…">`;
-  SECOES.forEach(sc=>{
-    h+=`<div class="sech">${sc.t}<small>${sc.s}</small></div><div class="grid">`;
-    L.filter(l=>l.n>=sc.de&&l.n<=sc.ate).forEach(l=>{const c=lx(l.n);
-      h+=`<button class="lc" data-go="${l.n}" data-s="${esc((l.name+" "+l.title).toLowerCase())}">
+  const lcard=(l,busca=true)=>{const c=lx(l.n);
+    return `<button class="lc" data-go="${l.n}" data-s="${busca?esc((l.name+" "+l.title).toLowerCase()):""}">
         <div class="th" style="background-image:url(img/${l.cover})"><span class="num">${l.n}</span>${c.done?'<span class="done">✓</span>':""}
         <span class="ico">${(c.videos||[]).length?"<b>▶ vídeo</b>":""}${(c.quiz||[]).length?`<b>? ${c.quiz.length}</b>`:""}</span></div>
         <div class="tx"><div class="nm">${esc(l.name)}</div><div class="tt">${esc(l.title)}</div></div>
-        <div class="pp"><i style="width:${pct(l)}%"></i></div></button>`;
-    });h+="</div>";
+        <div class="pp"><i style="width:${pct(l)}%"></i></div></button>`};
+
+  // topo: a próxima lição e, logo abaixo, as já estudadas (mais recentes primeiro)
+  if(nx)h+=`<div class="sech">Continuar<small>Próxima lição a estudar</small></div><div class="grid">${lcard(nx,false)}</div>`;
+  const feitasL=L.filter(l=>lx(l.n).done)
+    .sort((a,b)=>(lx(b.n).done||"").localeCompare(lx(a.n).done||"")||b.n-a.n);
+  if(feitasL.length)h+=`<div class="sech">Já estudadas<small>${feitasL.length} ${feitasL.length===1?"lição":"lições"}, da mais recente para a mais antiga</small></div>
+    <div class="grid">${feitasL.map(l=>lcard(l,false)).join("")}</div>`;
+
+  SECOES.forEach(sc=>{
+    h+=`<div class="sech">${sc.t}<small>${sc.s}</small></div><div class="grid">`;
+    L.filter(l=>l.n>=sc.de&&l.n<=sc.ate).forEach(l=>{h+=lcard(l)});
+    h+="</div>";
   });
   $("#app").innerHTML=h;
   const norm=s=>s.normalize("NFD").replace(/\p{Diacritic}/gu,"");
