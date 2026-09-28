@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Coragem · Estudo em Família</title>
+<title>Adoração em Família · Analise mais a Fundo.</title>
 <meta name="theme-color" content="#c2410c">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon-192.png">
@@ -193,13 +193,46 @@ textarea:focus,input:focus,.rte:focus{outline:2px solid color-mix(in srgb,var(--
 .cprow{display:flex;justify-content:flex-end;margin-top:8px}
 .cpbtn{font-size:13px}
 .art{position:relative}
+/* logo e capa */
+.brand{display:flex;align-items:center;gap:9px;flex:1;min-width:0}
+.brand .mark{width:32px;height:32px;flex:none}
+.brand h1{font-size:15px;line-height:1.15;margin:0;white-space:nowrap;overflow:visible;font-weight:700;letter-spacing:-.2px}
+.brand h1 small{display:block;font-size:10.5px;font-weight:600;color:var(--muted);letter-spacing:.2px;white-space:nowrap}
+/* em telas estreitas a barra fica só com a logo e o nome */
+@media(max-width:560px){
+  .brand h1{font-size:14px}
+  .brand h1 small,#st{display:none}
+  #loginbar{display:none!important}
+}
+@media(max-width:400px){ .brand h1{font-size:13.5px} .bar .sync{display:none} }
+
+.cover-page{position:relative;margin:0 -16px;min-height:calc(100dvh - 56px);display:flex;flex-direction:column;
+  align-items:center;justify-content:center;text-align:center;padding:36px 22px calc(34px + env(safe-area-inset-bottom));overflow:hidden}
+.cv-bg{position:absolute;inset:0;background-size:cover;background-position:center;filter:blur(26px) saturate(1.15);transform:scale(1.25);opacity:.5}
+.cv-bg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,color-mix(in srgb,var(--bg) 62%,transparent),var(--bg) 88%)}
+.cv-in{position:relative;width:100%;max-width:440px;display:flex;flex-direction:column;align-items:center;gap:0}
+.cv-mark{width:104px;height:104px;filter:drop-shadow(0 12px 26px rgba(0,0,0,.28))}
+.cv-title{font-family:var(--serif);font-size:clamp(30px,8.6vw,40px);line-height:1.08;margin:16px 0 0;letter-spacing:-.5px}
+.cv-sub{margin:8px 0 0;color:var(--acc);font-weight:700;font-size:16px;letter-spacing:.3px}
+.cv-rule{width:52px;height:3px;border-radius:2px;background:var(--acc);opacity:.55;margin:18px 0}
+.cv-book{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:14px;
+  padding:10px 14px;box-shadow:var(--shadow);text-align:left}
+.cv-book img{width:42px;border-radius:5px;flex:none}
+.cv-book span{font-size:13px;color:var(--muted);line-height:1.35}
+.cv-book b{display:block;color:var(--ink);font-size:14px}
+.cv-prog{width:100%;margin:22px 0 4px}
+.cv-prog .prog{margin-top:8px}
+.cv-prog p{margin:0;font-size:13.5px;color:var(--muted)}
+.cv-acts{display:flex;flex-direction:column;gap:10px;width:100%;margin-top:18px}
+.cv-acts .btn{justify-content:center;padding:14px 18px;font-size:16px;border-radius:14px}
+.cv-next{font-size:13px;color:var(--muted);margin:14px 0 0}
 .hide{display:none!important}
 </style>
 </head>
 <body>
 <header class="bar"><div class="wrap">
   <button class="ib hide" id="back" aria-label="Voltar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
-  <h1 id="bt">Ande Corajosamente com Deus</h1>
+  <div class="brand" id="brand"><span class="mark" id="mark"></span><h1 id="bt">Adoração em Família<small>Analise mais a Fundo.</small></h1></div>
   <button class="btn sm hide" id="loginbar">Entrar</button>
   <span class="sync"><span class="dot" id="dot"></span><span id="st">…</span></span>
   <button class="ib" id="edit" aria-label="Modo editor" title="Modo editor"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg></button>
@@ -419,14 +452,54 @@ function compressImg(file){return new Promise((res,rej)=>{const r=new FileReader
   const w=Math.min(800,im.width),h=Math.round(im.height*w/im.width),c=document.createElement("canvas");c.width=w;c.height=h;
   c.getContext("2d").drawImage(im,0,0,w,h);res(c.toDataURL("image/jpeg",.72))};im.onerror=rej;im.src=r.result};r.readAsDataURL(file)})}
 
+/* ===== logo ===== */
+function LOGO(size){return `<svg viewBox="0 0 64 64" width="${size}" height="${size}" role="img" aria-label="Adoração em Família">
+  <defs><linearGradient id="lgA" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ea580c"/><stop offset="1" stop-color="#9a3412"/></linearGradient></defs>
+  <rect x="2" y="2" width="60" height="60" rx="17" fill="url(#lgA)"/>
+  <path d="M8 46V21c6-3 12-3 16 1v25c-4-3-10-3-16-1z" fill="#fff" opacity=".93"/>
+  <path d="M56 46V21c-6-3-12-3-16 1v25c4-3 10-3 16-1z" fill="#fff" opacity=".78"/>
+  <path d="M32 22v25" stroke="#7c2d12" stroke-width="2.4" stroke-linecap="round" opacity=".55"/>
+  <path d="M32 6c3.4 3.6 5.2 6.6 5.2 9.2 0 3-2.3 5.2-5.2 5.2s-5.2-2.2-5.2-5.2c0-2.6 1.8-5.6 5.2-9.2z" fill="#fde68a"/>
+  <circle cx="20" cy="33" r="2.6" fill="#c2410c" opacity=".55"/><circle cx="44" cy="33" r="2.6" fill="#c2410c" opacity=".45"/>
+</svg>`}
+const APP_NAME="Adoração em Família", APP_SUB="Analise mais a Fundo.", LIVRO="Ande Corajosamente com Deus";
+
 /* ===== telas ===== */
 let view={name:"home"};
+function capa(){
+  view={name:"capa"};
+  $("#back").classList.add("hide");setBar();document.title=APP_NAME+" · "+APP_SUB;
+  const tot=L.length,feitas=L.filter(l=>lx(l.n).done).length,nx=L.find(l=>!lx(l.n).done);
+  $("#app").innerHTML=`<section class="cover-page">
+    <div class="cv-bg" style="background-image:url(img/capa-livro.webp)"></div>
+    <div class="cv-in">
+      <span class="cv-mark">${LOGO(104)}</span>
+      <h2 class="cv-title">${APP_NAME}</h2>
+      <p class="cv-sub">${APP_SUB}</p>
+      <span class="cv-rule"></span>
+      <div class="cv-book"><img src="img/capa-livro.webp" alt="Capa do livro"><span>Estudo baseado no livro<b>${LIVRO}</b></span></div>
+      <div class="cv-prog"><p>${feitas} de ${tot} lições estudadas</p><div class="prog"><i style="width:${100*feitas/tot}%"></i></div></div>
+      <div class="cv-acts">
+        ${nx?`<button class="btn pri" data-go="${nx.n}">${feitas?`Continuar: lição ${nx.n}`:"Começar pela lição 1"}</button>`
+            :`<button class="btn pri" id="verlicoes">Rever as lições</button>`}
+        <button class="btn" id="verlicoes2">Ver todas as lições</button>
+      </div>
+      ${nx?`<p class="cv-next">${esc(nx.name)} — ${esc(nx.title)}</p>`:`<p class="cv-next">Vocês concluíram as ${tot} lições 🎉</p>`}
+    </div></section>`;
+  const ir=()=>{location.hash="#/licoes"};
+  const a=$("#verlicoes"),b=$("#verlicoes2");if(a)a.onclick=ir;if(b)b.onclick=ir;
+  window.scrollTo(0,0);
+}
+function setBar(txt){
+  $("#mark").innerHTML=LOGO(32);
+  $("#bt").innerHTML=txt?esc(txt):`${APP_NAME}<small>${APP_SUB}</small>`;
+}
 function home(keep){
   view={name:"home"};
-  $("#back").classList.add("hide");$("#bt").textContent="Ande Corajosamente com Deus";document.title="Coragem · Estudo em Família";
+  $("#back").classList.remove("hide");setBar();document.title="Lições · "+APP_NAME;
   const tot=L.length,feitas=L.filter(l=>lx(l.n).done).length,nx=L.find(l=>!lx(l.n).done);
   let h=`<section class="hero"><img src="img/capa-livro.webp" alt="Capa do livro">
-   <div style="flex:1"><h2>Estudo em família</h2><p>${feitas} de ${tot} lições estudadas</p>
+   <div style="flex:1"><h2>${APP_NAME}</h2><p>${APP_SUB}<br>${feitas} de ${tot} lições estudadas</p>
    <div class="prog"><i style="width:${100*feitas/tot}%"></i></div>
    ${nx?`<button class="btn pri" style="margin-top:14px" data-go="${nx.n}">Continuar: lição ${nx.n}</button>`:""}</div></section>
    <input class="search" id="q" placeholder="Buscar personagem ou título…">`;
@@ -459,7 +532,7 @@ function home(keep){
 }
 
 function lessonShell(l,p){
-  $("#back").classList.remove("hide");$("#bt").textContent=`${l.n}. ${l.name}`;document.title=`${l.n}. ${l.name} · Coragem`;
+  $("#back").classList.remove("hide");setBar(`${l.n}. ${l.name}`);document.title=`${l.n}. ${l.name} · ${APP_NAME}`;
   const c=lx(l.n);
   return `<div class="cover ${p>1?"sm":""}" style="background-image:url(img/${l.cover})"><div class="ct"><div class="ctx">Lição ${l.n} · ${esc(l.name)}</div><h2>${esc(l.title)}</h2></div></div>
   <nav class="tabs">
@@ -739,7 +812,8 @@ function render(keepScroll){
     if(keepScroll||(prev.name==="lesson"&&prev.n===+m[1]&&prev.p===p))window.scrollTo(0,y);
     else if(prev.name==="lesson"&&prev.n===+m[1]){const t=document.querySelector(".tabs");window.scrollTo(0,Math.min(y,t.offsetTop))}
     else window.scrollTo(0,0);
-  }else home();
+  }else if(location.hash.indexOf("licoes")>0)home(keepScroll);
+  else capa();
 }
 function grow(t){t.style.height="auto";t.style.height=Math.max(74,t.scrollHeight+2)+"px"}
 function refreshFields(force){
@@ -750,6 +824,7 @@ function refreshFields(force){
   });
 }
 function onRemote(){
+  if(view.name==="capa"){capa();return}
   if(view.name==="home"){if(!($("#q")&&$("#q").value))home(true);return}
   const a=document.activeElement;
   const editing=a&&(a.matches("textarea,input,.rte,.ce"));
@@ -770,7 +845,7 @@ document.addEventListener("click",e=>{
   if(!e.target.closest("#more,#menu"))$("#menu").classList.remove("on");
 });
 addEventListener("keydown",e=>{if(e.key==="Escape"){closePlayer();$("#lbx").classList.remove("on")}});
-$("#back").onclick=()=>{location.hash=""};
+$("#back").onclick=()=>{location.hash=view.name==="home"?"":"#/licoes"};
 $("#more").onclick=()=>$("#menu").classList.toggle("on");
 $("#login").onclick=$("#loginbar").onclick=()=>{$("#menu").classList.remove("on");login()};
 $("#logout").onclick=()=>{$("#menu").classList.remove("on");if(confirm("Sair da conta? As respostas continuam salvas na nuvem."))firebase.auth().signOut()};
