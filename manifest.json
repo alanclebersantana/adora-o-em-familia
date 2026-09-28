@@ -3,7 +3,7 @@
   "short_name": "Adoração em Família",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#faf8f5",
+  "background_color": "#FFF3EB",
   "theme_color": "#c2410c",
   "lang": "pt-BR",
   "icons": [

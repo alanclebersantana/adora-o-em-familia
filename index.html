@@ -207,25 +207,31 @@ textarea:focus,input:focus,.rte:focus{outline:2px solid color-mix(in srgb,var(--
 @media(max-width:400px){ .brand h1{font-size:13.5px} .bar .sync{display:none} }
 
 .cover-page{position:relative;margin:0 -16px;min-height:calc(100dvh - 56px);display:flex;flex-direction:column;
-  align-items:center;justify-content:center;text-align:center;padding:36px 22px calc(34px + env(safe-area-inset-bottom));overflow:hidden}
-.cv-bg{position:absolute;inset:0;background-size:cover;background-position:center;filter:blur(26px) saturate(1.15);transform:scale(1.25);opacity:.5}
-.cv-bg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,color-mix(in srgb,var(--bg) 62%,transparent),var(--bg) 88%)}
-.cv-in{position:relative;width:100%;max-width:440px;display:flex;flex-direction:column;align-items:center;gap:0}
-.cv-mark{width:104px;height:104px;filter:drop-shadow(0 12px 26px rgba(0,0,0,.28))}
-.cv-title{font-family:var(--serif);font-size:clamp(30px,8.6vw,40px);line-height:1.08;margin:16px 0 0;letter-spacing:-.5px}
-.cv-sub{margin:8px 0 0;color:var(--acc);font-weight:700;font-size:16px;letter-spacing:.3px}
-.cv-rule{width:52px;height:3px;border-radius:2px;background:var(--acc);opacity:.55;margin:18px 0}
-.cv-book{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:14px;
-  padding:10px 14px;box-shadow:var(--shadow);text-align:left}
-.cv-book img{width:42px;border-radius:5px;flex:none}
-.cv-book span{font-size:13px;color:var(--muted);line-height:1.35}
-.cv-book b{display:block;color:var(--ink);font-size:14px}
-.cv-prog{width:100%;margin:22px 0 4px}
-.cv-prog .prog{margin-top:8px}
-.cv-prog p{margin:0;font-size:13.5px;color:var(--muted)}
-.cv-acts{display:flex;flex-direction:column;gap:10px;width:100%;margin-top:18px}
-.cv-acts .btn{justify-content:center;padding:14px 18px;font-size:16px;border-radius:14px}
-.cv-next{font-size:13px;color:var(--muted);margin:14px 0 0}
+  align-items:center;justify-content:center;text-align:center;padding:30px 22px calc(34px + env(safe-area-inset-bottom));overflow:hidden;color:#fff}
+.cv-bg{position:absolute;inset:0;background-size:cover;background-position:center;filter:blur(26px) saturate(1.25);transform:scale(1.3)}
+.cv-bg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,
+  rgba(10,9,8,.10) 0%,rgba(10,9,8,.28) 38%,rgba(28,26,24,.70) 66%,rgba(18,17,16,.92) 84%,#0a0908 100%)}
+.cv-in{position:relative;width:100%;max-width:420px;display:flex;flex-direction:column;align-items:center}
+.cv-livro{width:min(56vw,210px);border-radius:6px 12px 12px 6px;
+  box-shadow:0 30px 50px -18px rgba(0,0,0,.75),-6px 0 0 rgba(0,0,0,.25);transform:perspective(900px) rotateY(-9deg)}
+.cv-title{font-family:var(--serif);font-size:clamp(26px,7.6vw,34px);line-height:1.08;margin:22px 0 0;color:#fff;text-shadow:0 2px 12px rgba(0,0,0,.45)}
+.cv-sub{margin:7px 0 0;color:#ffb187;font-weight:700;font-size:15px;letter-spacing:.2px}
+.cv-prog{width:100%;margin:20px 0 0}
+.cv-prog p{margin:0;font-size:13.5px;color:rgba(255,255,255,.82)}
+.cv-prog .prog{background:rgba(255,255,255,.22);margin-top:8px}
+.cv-next{display:flex;gap:12px;align-items:center;width:100%;margin-top:18px;text-align:left;color:#fff;cursor:pointer;
+  background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:18px;padding:10px;
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.cv-next img{width:76px;height:76px;border-radius:12px;object-fit:cover;flex:none}
+.cv-next .t{flex:1;min-width:0}
+.cv-next .k{font-size:10.5px;font-weight:800;color:#ffb187;letter-spacing:.06em}
+.cv-next .n{font-weight:700;font-size:15.5px;line-height:1.2;margin-top:2px}
+.cv-next .s{font-size:13px;color:rgba(255,255,255,.78);line-height:1.3;margin-top:2px}
+.cv-next .go{width:34px;height:34px;border-radius:50%;background:#c2410c;color:#fff;display:grid;place-items:center;flex:none;font-weight:800}
+.cv-acts{width:100%;margin-top:12px}
+.cv-acts .btn{width:100%;justify-content:center;padding:13px 18px;font-size:15.5px;border-radius:14px;
+  background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.34);backdrop-filter:blur(8px)}
+.cv-done{margin:16px 0 0;font-size:14px;color:rgba(255,255,255,.85)}
 .hide{display:none!important}
 </style>
 </head>
@@ -473,25 +479,23 @@ function capa(){
   $("#app").innerHTML=`<section class="cover-page">
     <div class="cv-bg" style="background-image:url(img/capa-livro.webp)"></div>
     <div class="cv-in">
-      <span class="cv-mark">${LOGO(104)}</span>
+      <img class="cv-livro" src="img/capa-livro.webp" alt="Capa do livro ${LIVRO}">
       <h2 class="cv-title">${APP_NAME}</h2>
       <p class="cv-sub">${APP_SUB}</p>
-      <span class="cv-rule"></span>
-      <div class="cv-book"><img src="img/capa-livro.webp" alt="Capa do livro"><span>Estudo baseado no livro<b>${LIVRO}</b></span></div>
       <div class="cv-prog"><p>${feitas} de ${tot} lições estudadas</p><div class="prog"><i style="width:${100*feitas/tot}%"></i></div></div>
-      <div class="cv-acts">
-        ${nx?`<button class="btn pri" data-go="${nx.n}">${feitas?`Continuar: lição ${nx.n}`:"Começar pela lição 1"}</button>`
-            :`<button class="btn pri" id="verlicoes">Rever as lições</button>`}
-        <button class="btn" id="verlicoes2">Ver todas as lições</button>
-      </div>
-      ${nx?`<p class="cv-next">${esc(nx.name)} — ${esc(nx.title)}</p>`:`<p class="cv-next">Vocês concluíram as ${tot} lições 🎉</p>`}
+      ${nx?`<div class="cv-next" role="button" tabindex="0" data-go="${nx.n}">
+          <img src="img/${nx.cover}" alt="">
+          <div class="t"><div class="k">${feitas?"CONTINUAR":"COMEÇAR"} · LIÇÃO ${nx.n}</div>
+            <div class="n">${esc(nx.name)}</div><div class="s">${esc(nx.title)}</div></div>
+          <span class="go">→</span></div>`
+        :`<p class="cv-done">Vocês concluíram as ${tot} lições 🎉</p>`}
+      <div class="cv-acts"><button class="btn" id="verlicoes">Ver todas as lições</button></div>
     </div></section>`;
-  const ir=()=>{location.hash="#/licoes"};
-  const a=$("#verlicoes"),b=$("#verlicoes2");if(a)a.onclick=ir;if(b)b.onclick=ir;
+  $("#verlicoes").onclick=()=>{location.hash="#/licoes"};
   window.scrollTo(0,0);
 }
 function setBar(txt){
-  $("#mark").innerHTML=LOGO(32);
+  $("#mark").innerHTML=`<img src="icon-192.png" alt="" style="width:100%;height:100%;border-radius:9px">`;
   $("#bt").innerHTML=txt?esc(txt):`${APP_NAME}<small>${APP_SUB}</small>`;
 }
 function home(keep){
@@ -510,19 +514,11 @@ function home(keep){
         <div class="tx"><div class="nm">${esc(l.name)}</div><div class="tt">${esc(l.title)}</div></div>
         <div class="pp"><i style="width:${pct(l)}%"></i></div></button>`};
 
-  // topo: a próxima lição e, logo abaixo, as já estudadas (mais recentes primeiro)
-  if(nx)h+=`<div class="sech">Continuar<small>Próxima lição a estudar</small></div><div class="grid">${lcard(nx,false)}</div>`;
-  const feitasL=L.filter(l=>lx(l.n).done)
-    .sort((a,b)=>(lx(b.n).done||"").localeCompare(lx(a.n).done||"")||b.n-a.n);
-  if(feitasL.length)h+=`<div class="sech">Já estudadas<small>${feitasL.length} ${feitasL.length===1?"lição":"lições"}, da mais recente para a mais antiga</small></div>
-    <div class="grid">${feitasL.map(l=>lcard(l)).join("")}</div>`;
-
-  // as seções do livro mostram apenas o que ainda falta estudar
   SECOES.forEach(sc=>{
-    const falta=L.filter(l=>l.n>=sc.de&&l.n<=sc.ate&&!lx(l.n).done);
-    if(!falta.length)return;
-    h+=`<div class="sech">${sc.t}<small>${sc.s}</small></div><div class="grid">${falta.map(l=>lcard(l)).join("")}</div>`;
+    const ls=L.filter(l=>l.n>=sc.de&&l.n<=sc.ate);
+    h+=`<div class="sech">${sc.t}<small>${sc.s}</small></div><div class="grid">${ls.map(l=>lcard(l)).join("")}</div>`;
   });
+
   $("#app").innerHTML=h;
   const norm=s=>s.normalize("NFD").replace(/\p{Diacritic}/gu,"");
   $("#q").oninput=e=>{const v=norm(e.target.value.toLowerCase());
