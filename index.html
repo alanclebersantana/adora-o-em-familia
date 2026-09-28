@@ -681,9 +681,11 @@ function page3(l){
       h+=`<div class="qc"><div class="qn">Pergunta ${i+1} de ${qz.length}</div><div class="qp">${esc(q.p)}</div>
         ${q.o.map((o,oi)=>{let cl="";if(r!==undefined){if(oi===q.c)cl="ok";else if(oi===r)cl="bad"}
           return `<button class="opt ${cl}" data-q="${i}" data-o="${oi}" ${r!==undefined?"disabled":""}><span class="l">${LET[oi]}</span><span>${esc(o)}</span></button>`}).join("")}
-        ${r!==undefined&&q.e?`<div class="expl">${esc(q.e)}</div>`:""}</div>`});
+        ${r!==undefined&&q.e?`<div class="expl">${esc(q.e)}</div>`:""}
+        ${r!==undefined?`<div class="row" style="margin-top:10px"><span class="sp"></span><button class="btn sm" data-rq="${i}">Trocar resposta</button></div>`:""}</div>`});
     const resp=Object.keys(st).length,ac=Object.entries(st).filter(([i,r])=>qz[i]&&qz[i].c===r).length;
     if(resp===qz.length)h+=`<div class="score"><b>${ac}/${qz.length}</b><div style="flex:1">${ac===qz.length?"Excelente! Acertaram todas 🎉":"acertos"}</div><button class="btn sm" id="redo">Refazer</button></div>`;
+    else if(resp)h+=`<div class="score"><b>${resp}/${qz.length}</b><div style="flex:1">respondidas</div><button class="btn sm" id="redo">Refazer tudo</button></div>`;
   }
   h+=`</div>`;
   const next=L.find(x=>x.n===n+1);
@@ -694,6 +696,7 @@ function bindPage3(l){
   const n=l.n,Q=()=>lx(n).quiz||(lx(n).quiz=[]);
   document.querySelectorAll(".opt[data-q]").forEach(b=>b.onclick=()=>{(play[n]=play[n]||{})[+b.dataset.q]=+b.dataset.o;render(true)});
   const redo=$("#redo");if(redo)redo.onclick=()=>{play[n]={};render()};
+  document.querySelectorAll("[data-rq]").forEach(b=>b.onclick=()=>{const st=play[n]||(play[n]={});delete st[+b.dataset.rq];render(true)});
   const addq=$("#addq");if(addq)addq.onclick=()=>{Q().push({p:"",o:["","","",""],c:0,e:""});saveQuiz(n,true);render(true);
     const all=document.querySelectorAll(".qe");const last=all[all.length-1];last.scrollIntoView({behavior:"smooth",block:"center"});last.querySelector("textarea").focus()};
   document.querySelectorAll(".qe").forEach(card=>{const i=+card.dataset.qi,q=()=>Q()[i];
